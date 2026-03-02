@@ -165,7 +165,7 @@ export default function PartiesPage() {
               onClick={onJoinWithCode}
               className="btn btn-primary flex-1"
             >
-              Bli med i fest med kode
+              Join fest med kode
             </button>
           </div>
         </div>
