@@ -1,13 +1,21 @@
 @import "tailwindcss";
 
+/* ---------------------------
+   Design tokens
+---------------------------- */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --muted: rgba(23, 23, 23, 0.7);
+  --border: rgba(23, 23, 23, 0.18);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -16,11 +24,118 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --muted: rgba(237, 237, 237, 0.72);
+    --border: rgba(237, 237, 237, 0.18);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------------------------
+   Base styles
+---------------------------- */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Typography */
+  h1 {
+    @apply text-2xl font-semibold;
+  }
+
+  /* Links */
+  a {
+    @apply underline-offset-4;
+  }
+
+  /* Forms: make defaults consistent */
+  label {
+    @apply text-sm font-medium;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply w-full rounded-xl border bg-background text-foreground px-4 py-2 outline-none;
+    @apply focus:ring-2 focus:ring-foreground/30;
+  }
+}
+
+/* ---------------------------
+   Reusable components (class-based)
+---------------------------- */
+@layer components {
+  /* Layout */
+  .page-center {
+    @apply min-h-screen flex items-center justify-center p-6 bg-background text-foreground;
+  }
+
+  .card {
+    @apply w-full max-w-sm rounded-2xl border bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50;
+    @apply p-6 shadow-sm;
+  }
+
+  .card-stack {
+    @apply space-y-6;
+  }
+
+  .helper-row {
+    @apply flex items-center justify-between text-sm text-foreground/80;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 font-semibold transition;
+    @apply disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-primary {
+    @apply bg-foreground text-background hover:opacity-90;
+  }
+
+  .btn-outline {
+    @apply border-2 border-white text-white hover:bg-black/30;
+  }
+
+  /* Dividers */
+  .divider {
+    @apply flex items-center gap-3;
+  }
+
+  .divider-line {
+    @apply h-px flex-1 bg-foreground/20;
+  }
+
+  .divider-text {
+    @apply text-xs uppercase tracking-wide text-foreground/70;
+  }
+
+  /* Hero/video landing helpers */
+  .hero {
+    @apply relative min-h-screen flex items-center justify-center overflow-hidden;
+  }
+
+  .hero-video {
+    @apply absolute inset-0 w-full h-full object-cover;
+  }
+
+  .hero-overlay {
+    @apply absolute inset-0 bg-black/40;
+  }
+
+  .hero-content {
+    @apply relative z-10 flex flex-col items-center gap-6 text-center;
+  }
+
+  .hero-title {
+    @apply text-5xl md:text-6xl font-extrabold text-white tracking-wide;
+  }
 }
