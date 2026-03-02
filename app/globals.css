@@ -105,6 +105,14 @@
     @apply border-2 border-white text-white hover:bg-black/30;
   }
 
+  .circular-btn {
+    @apply inline-flex items-center justify-center rounded-full border transition;
+    @apply bg-background text-foreground;
+    @apply hover:bg-foreground/10 active:scale-95;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30;
+    @apply disabled:opacity-50 disabled:pointer-events-none;
+  }
+
   /* Dividers */
   .divider {
     @apply flex items-center gap-3;
