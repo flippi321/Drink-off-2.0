@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { requireUserId } from "./auth_service";
 import { Party, PartyGuestRow, PartyStatus } from "@/lib/types/party_types";
+import { fetchEdgeFunction } from "../hooks/edge_functions";
 
 /**
  * Fetch parties where the current user is the owner
