@@ -1,10 +1,6 @@
 import { supabase } from "@/lib/supabaseClient";
+import { requireUserId } from "./auth_service";
 import { Party, PartyGuestRow, PartyStatus } from "@/lib/types/party_types";
-
-function requireUserId(userId: string | null | undefined): string {
-  if (!userId) throw new Error("Not authenticated.");
-  return userId;
-}
 
 /**
  * Fetch parties where the current user is the owner
