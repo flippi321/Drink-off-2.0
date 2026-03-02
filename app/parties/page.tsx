@@ -121,6 +121,10 @@ export default function PartiesPage() {
     [guestParties]
   );
 
+  function onCreateNewParty() {
+    router.push("/parties/create");
+  }
+
   function onJoinWithCode() {
     router.push("/parties/join"); // create this route for code entry
   }
@@ -143,7 +147,7 @@ export default function PartiesPage() {
           <div className="mt-6 flex items-center gap-3">
             {/* Button to Create a Party */}
             <CircularButton
-            onClick={() => router.replace("/parties/create")}
+            onClick={onCreateNewParty}
             icon="plus"
             aria-label="Create party"
             title="Create party"
@@ -154,7 +158,7 @@ export default function PartiesPage() {
             
             {/* Buttons to Join a party */}
             <CircularButton
-            onClick={() => router.replace("/parties/join/qr")}
+            onClick={onJoinWithQR}
             icon="qr"
             aria-label="Join a Party with QR"
             title="Join with QR"
