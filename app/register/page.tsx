@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+import { registerWithEmail } from "@/services/auth_service";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -22,15 +23,8 @@ export default function RegisterPage() {
 
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signUp({
-        email: eTrim,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw new Error(error.message);
-
+      const result = await registerWithEmail(email, password, "test_username");
+      
       router.push("/parties");
     } catch (err: any) {
       setError(err?.message ?? "Registration failed.");

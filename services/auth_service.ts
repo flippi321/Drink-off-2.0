@@ -25,6 +25,36 @@ export async function loginWithEmail(email: string, password: string) {
     email: email.trim(),
     password,
   });
+  if (error) throw new Error(error);
+  return data;
+}
+
+/**
+ * Function to register a new user with email and password using Supabase auth, along with optional profile data.
+ * @param email the user's email address
+ * @param password the user's password
+ * @param username the user's chosen username
+ * @param gender the user's gender
+ * @param weight the user's weight
+ * @param avatar_url the URL to the user's avatar image
+ * 
+ * @returns the authentication data from Supabase
+ * @throws an error if the registration process fails, such as email already in use or network issues
+ */
+export async function registerWithEmail(email: string, password: string, username: string, gender?: string, weight?: number, avatar_url?: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email: email.trim(),
+    password,
+    options: {
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
+      data: {
+        username,
+        gender,      // optional
+        weight,      // optional
+        avatar_url,  // optional
+      },
+    },
+  });
   if (error) throw new Error(error.message);
   return data;
 }
