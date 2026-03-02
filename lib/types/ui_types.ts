@@ -1,5 +1,5 @@
 // ---------- INPUT FIELDS ----------
-type TextBoxProps = {
+export type TextBoxProps = {
   id?: string;
   label: string;
   value: string;
