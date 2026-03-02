@@ -1,28 +1,7 @@
 "use client";
 
 import type { ComponentProps } from "react";
-
-export type CircularIcon =
-  | "plus"
-  | "qr"
-  | "chevron-right"
-  | "close"
-  | "settings";
-
-type BaseProps = {
-  icon: CircularIcon;
-  size?: "sm" | "md" | "lg";
-  variant?: "default" | "inverted";
-  className?: string;
-  title?: string;
-  "aria-label": string;
-  disabled?: boolean;
-};
-
-export type CircularButtonProps = BaseProps & {
-  onClick: ComponentProps<"button">["onClick"];
-  type?: ComponentProps<"button">["type"];
-};
+import { CircularButtonProps, CircularIcon } from "@/lib/types/ui_types";
 
 const SIZE: Record<NonNullable<CircularButtonProps["size"]>, string> = {
   sm: "w-10 h-10",
