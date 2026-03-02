@@ -25,6 +25,10 @@ export async function loginWithEmail(email: string, password: string) {
   return data;
 }
 
+/**
+ * Function to initiate Google OAuth login using Supabase auth.
+ * @returns the authentication data from Supabase or an error if login fails
+ */
 export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -37,6 +41,9 @@ export async function signInWithGoogle() {
   return data;
 }
 
+/**
+ * Function to log out the current user using Supabase auth.
+ */
 export async function logout() {
   const { error } = await supabase.auth.signOut();
   if (error) throw new Error(error.message);
