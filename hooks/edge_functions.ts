@@ -8,30 +8,19 @@ export function getEdgeFunctionURL(function_name: string) {
     return edge_function_url;
 }
 
-function getAuthHeaders(token: string): Record<string, string> {
-    return {
-        "Authorization": `Bearer ${token}`
-    }
-}
-
-export async function fetchEdgeFunction(function_name: string, method: ApiMethod, headers?: Record<string, string>) : Promise<Response> {
-    const edge_function_url = getEdgeFunctionURL(function_name);
+export async function useEdgeFunction(function_name: string, method: ApiMethod, variables?: Record<string, string>) : Promise<Response> {
     const authorization = await supabase.auth.getSession();
 
     if(!authorization.data.session) {
         throw new Error("User is not authenticated.");
     }
 
-    const options: EdgeFunctionOptions = {
-        method,
-        headers: {
-        ...headers,
-        "Authorization": `Bearer ${authorization.data.session.access_token}`,
+    const { data, error } = await supabase.functions.invoke(function_name, {
+        body: {
+            ...variables,
         }
-    }
-
-    console.log(options)
-
-    const response = await fetch(edge_function_url, options);
-    return response;
+    });
+    console.log(data);
+    if (error) throw error;
+    return data;
 }
