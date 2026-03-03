@@ -1,83 +1,41 @@
-import { supabase } from "@/lib/supabaseClient";
-import { requireUserId } from "./auth_service";
 import { Party, PartyGuestRow, PartyStatus } from "@/lib/types/party_types";
-import { fetchEdgeFunction } from "../hooks/edge_functions";
+import { useEdgeFunction } from "../hooks/edge_functions";
 
 /**
  * Fetch parties where the current user is the owner
+ * 
+ * @returns a list of parties owned by the current user
+ * @throws an error if the user is not authenticated or if the database query fails
  */
 export async function fetchOwnedParties(): Promise<Party[]> {
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError) throw new Error(authError.message);
-  const userId = requireUserId(user?.id);
-
-  const { data, error } = await supabase
-    .from("parties")
-    .select("party_id, owner_id, name, code, status, created_at, image_url")
-    .eq("owner_id", userId)
-    .order("created_at", { ascending: false });
+  const { data, error } = await useEdgeFunction("get-owned-parties");
 
   if (error) throw new Error(error.message);
-  return (data ?? []) as Party[];
+  return data as Party[] ?? [];
 }
 
 /**
- * Fetch parties where the current user is a guest
+ * Fetch parties where the current user is a guest and not the owner
+ * 
+ * @returns a list of parties the current user is a guest in
+ * @throws an error if the user is not authenticated or if the database query fails
  */
 export async function fetchGuestParties(): Promise<Party[]> {
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError) throw new Error(authError.message);
-  const userId = requireUserId(user?.id);
-
-  // Pull parties via party_guests join
-  const { data, error } = await supabase
-    .from("party_guests")
-    .select(
-      `
-      party_id,
-      parties:party_id (
-        party_id, owner_id, name, code, status, created_at, image_url
-      )
-    `
-    )
-    .eq("user_id", userId)
-    .order("joined_at", { ascending: false });
+  const { data, error } = await useEdgeFunction("get-user-parties");
 
   if (error) throw new Error(error.message);
-
-  // Flatten join results;
-  // We also filter out nulls + owned parties to avoid duplication
-  const parties = (data ?? [])
-    .map((row: any) => row.parties as Party | null)
-    .filter((p: Party | null): p is Party => Boolean(p))
-    .filter((p) => p.owner_id !== userId);
-
-  // Remove duplicates just in case
-  const uniqueById = new Map<string, Party>();
-  for (const p of parties) uniqueById.set(p.party_id, p);
-
-  return Array.from(uniqueById.values());
+  return data as Party[] ?? [];
 }
 
 /**
- * Convenience: fetch both lists in parallel.
+ * Function to call both fetchOwnedParties and fetchGuestParties and return their results together.
+ * 
+ * @returns an object containing two lists: ownedParties and guestParties
  */
-export async function fetchMyParties(): Promise<{
-  ownedParties: Party[];
-  guestParties: Party[];
-}> {
+export async function fetchMyParties(): Promise<{ ownedParties: Party[]; guestParties: Party[] }> {
   const [ownedParties, guestParties] = await Promise.all([
     fetchOwnedParties(),
     fetchGuestParties(),
   ]);
-
   return { ownedParties, guestParties };
 }
