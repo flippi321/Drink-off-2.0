@@ -1,4 +1,3 @@
-import { EdgeFunctionOptions, ApiMethod } from "@/lib/types/api_types";
 import { supabase } from "@/lib/supabaseClient";
 
 export function getEdgeFunctionURL(function_name: string) {
@@ -8,7 +7,7 @@ export function getEdgeFunctionURL(function_name: string) {
     return edge_function_url;
 }
 
-export async function useEdgeFunction(function_name: string, method: ApiMethod, variables?: Record<string, string>) : Promise<Response> {
+export async function useEdgeFunction(function_name: string, variables?: Record<string, string>) : Promise<Response> {
     const authorization = await supabase.auth.getSession();
 
     if(!authorization.data.session) {
