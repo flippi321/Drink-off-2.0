@@ -13,6 +13,15 @@ export function requireUserId(userId: string | null | undefined): string {
 }
 
 /**
+ * Function to fetch the supabase auth session
+ */
+export async function getSession() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+  if (error) throw error;
+  return session;
+}
+
+/**
  * Function to log in a user with email and password using Supabase auth.
  * @param email the user's email address
  * @param password the user's password
@@ -25,6 +34,8 @@ export async function loginWithEmail(email: string, password: string) {
     email: email.trim(),
     password,
   });
+
+  supabase.functions.setAuth(data.session?.access_token ?? null); // TODO check if can remove
   if (error) throw new Error(error);
   return data;
 }
@@ -73,7 +84,7 @@ export async function signInWithGoogle() {
       redirectTo: `${window.location.origin}/auth/callback`,
     },
   });
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(error);
   return data;
 }
 
@@ -82,5 +93,5 @@ export async function signInWithGoogle() {
  */
 export async function logout() {
   const { error } = await supabase.auth.signOut();
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(error);
 }
